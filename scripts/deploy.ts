@@ -1,18 +1,19 @@
 import { ethers } from "hardhat";
+import { verifyContract } from "../utils/helpers";
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  const usdc = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+  const oracle = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const TaskChainPresaleV2 = await ethers.getContractFactory("TaskChainPresaleV2");
+  const taskChainPresaleV2 = await TaskChainPresaleV2.deploy(usdc, oracle);
 
-  await lock.deployed();
+  await taskChainPresaleV2.deployed();
 
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
+  console.log('TaskChainV2 was deployed to ', taskChainPresaleV2.address);
+
+  await verifyContract(taskChainPresaleV2.address, usdc, oracle);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
