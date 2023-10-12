@@ -7,7 +7,7 @@ import "@nomicfoundation/hardhat-chai-matchers";
 // import '@nomiclabs/hardhat-ethers'
 import "solidity-coverage";
 
-import {chainIds, CURRENT_NETWORK_CONFIGURATION,} from './utils/constants';
+import {CURRENT_NETWORK_CONFIGURATION,} from './utils/constants';
 
 
 dotenv.config()

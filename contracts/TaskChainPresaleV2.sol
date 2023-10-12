@@ -213,9 +213,6 @@ contract TaskChainPresaleV2 is Ownable, ReentrancyGuard, Pausable {
             !tokensClaimed[msg.sender],
             "You have already claimed your tokens."
         );
-
-        // uint256 amountToClaim = tokensBought[msg.sender];
-        // require(amountToClaim > 0, "No tokens to claim.");
         tokensClaimed[msg.sender] = true;
         IERC20(saleTokenAddress).transferFrom(
             tokenHolderAddress,
