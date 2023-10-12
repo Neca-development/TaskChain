@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-import "hardhat/console.sol";
 interface Aggregator {
     function latestRoundData()
         external
@@ -26,10 +25,6 @@ interface ITaskChainPresale {
     function tokensSoldPerStage(uint256 _stage) external view returns(uint256);
 
 }
-
-// interface IERC20_USDT {
-//     function transferFrom(address from, address to, uint value) external;
-// } 
 
 contract TaskChainPresaleV2 is Ownable, ReentrancyGuard, Pausable {
     using SafeERC20 for IERC20;
@@ -289,6 +284,14 @@ contract TaskChainPresaleV2 is Ownable, ReentrancyGuard, Pausable {
             return taskChainPresaleV1.tokensBought(_user);
         }else{
             return tokensBought[msg.sender];
+        }
+    }
+
+    function getSoldTokensInCurrentStage() public view returns(uint256){
+        if(!isDataTransfferedFromV1){
+            return taskChainPresaleV1.tokensSoldPerStage(uint256(stage));
+        }else{
+            return tokensSoldPerStage[uint256(stage)];
         }
     }
 

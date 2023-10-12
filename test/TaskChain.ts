@@ -8,6 +8,7 @@ describe("TaskChainPresaleV2", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setup once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
+  const TOKENS_TO_BUY = 1;
   async function deployOneYearLockFixture() {
  
 
@@ -15,7 +16,7 @@ describe("TaskChainPresaleV2", function () {
     const [owner, otherAccount] = await ethers.getSigners();
      
     // DATA FROM SC
-    const AVAILABLE_TOKENS = 277091463;
+    const AVAILABLE_TOKENS = 277091073;
 
     const whaleUser =  await ethers.getImpersonatedSigner("0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8");
     const tokenHolder =  await ethers.getImpersonatedSigner("0x51423fBA13BbD6114Cc73D998862f210Faa6DCd3");
@@ -44,8 +45,6 @@ describe("TaskChainPresaleV2", function () {
       const availbleTokensBeforePurchase = await taskChainPresaleV2.getAvailableTokensInStage();
 
       expect(availbleTokensBeforePurchase).to.be.eq(AVAILABLE_TOKENS);
-
-      const TOKENS_TO_BUY = 1;
 
       const tokensBoughtBeforePurchase = await taskChainPresaleV2.getBoughtTokensAmount(whaleUser.address);
 
@@ -143,10 +142,40 @@ describe("TaskChainPresaleV2", function () {
 
       const { taskChainPresaleV2,} = await loadFixture(deployOneYearLockFixture);
 
-
       const tx = await taskChainPresaleV2.switchStage().catch((err)=>err);
 
       expect(tx).to.be.revertedWith("Transfer data from V1");
+
+    }); 
+
+
+    it("Check getSoldTokensInCurrentStage and switchStage", async function () {
+
+      const { taskChainPresaleV2, taskChainPresale, whaleUser} = await loadFixture(deployOneYearLockFixture);
+
+      const soldTokensInCurrentStage = await taskChainPresaleV2.getSoldTokensInCurrentStage();
+
+      const valueFromV1 = await taskChainPresale.tokensSoldPerStage(0);
+
+      expect(soldTokensInCurrentStage).to.be.eq(valueFromV1);
+
+      await taskChainPresaleV2.connect(whaleUser).buyTokenWithETH(TOKENS_TO_BUY, {value:ethers.utils.parseEther('0.05')});
+
+      const soldTokensInStageAfterPurchase = await taskChainPresaleV2.getSoldTokensInCurrentStage();
+
+      expect(soldTokensInStageAfterPurchase).to.be.eq(valueFromV1.add(1));
+
+      await taskChainPresaleV2.switchStage();
+      
+      const tokensSoldOnStage2InBegining = await taskChainPresaleV2.getSoldTokensInCurrentStage();
+
+      expect(tokensSoldOnStage2InBegining).to.be.eq(tokensSoldOnStage2InBegining);
+
+      await taskChainPresaleV2.connect(whaleUser).buyTokenWithETH(TOKENS_TO_BUY, {value:ethers.utils.parseEther('0.05')});
+
+      const tokensSoldOnStage2AfterPurchase = await taskChainPresaleV2.getSoldTokensInCurrentStage();
+
+      expect(tokensSoldOnStage2AfterPurchase).to.be.eq(TOKENS_TO_BUY);
 
     }); 
   });

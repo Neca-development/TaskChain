@@ -35,7 +35,6 @@ const NETWORK_CONFIGURATIONS: { [K in NETWORK]: EnvironmentConfiguration } = {
 	currency: "ETH",
 	token: "ETH",
 	gasPriceApi:ETHERSCAN_API_URL,
-	gasPrice: 50,
 	},
   },
 
@@ -48,7 +47,6 @@ const NETWORK_CONFIGURATIONS: { [K in NETWORK]: EnvironmentConfiguration } = {
 	currency: "ETH",
 	token: "ETH",
 	gasPriceApi:ETHERSCAN_API_URL,
-	gasPrice: 50
   },
 }
 }

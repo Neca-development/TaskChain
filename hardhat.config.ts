@@ -46,8 +46,7 @@ const config: HardhatUserConfig = {
 		coinmarketcap: CURRENT_NETWORK_CONFIGURATION.gasReporterConfig.coinmarketcap,
 		currency: CURRENT_NETWORK_CONFIGURATION.gasReporterConfig.currency,
 		token: CURRENT_NETWORK_CONFIGURATION.gasReporterConfig.token,
-		gasPriceApi: CURRENT_NETWORK_CONFIGURATION.gasReporterConfig.gasPriceApi,
-		gasPrice: CURRENT_NETWORK_CONFIGURATION.gasReporterConfig.gasPrice,
+		gasPriceApi: CURRENT_NETWORK_CONFIGURATION.gasReporterConfig.gasPriceApi
 	},
 	etherscan: {
 		apiKey: {

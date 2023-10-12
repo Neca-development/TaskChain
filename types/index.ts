@@ -5,8 +5,7 @@
     coinmarketcap?: string,
 	currency: string,
 	token: string,
-	gasPriceApi:string,
-	gasPrice: number,
+	gasPriceApi:string
 }
 
 
@@ -17,6 +16,6 @@ export interface EnvironmentConfiguration {
 
 export enum NETWORK {
 	MAINNET = 1,
-  GOERLI = 5
+    GOERLI = 5
 }
 
