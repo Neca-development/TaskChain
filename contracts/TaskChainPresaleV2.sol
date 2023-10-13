@@ -192,7 +192,7 @@ contract TaskChainPresaleV2 is Ownable, ReentrancyGuard, Pausable {
           
         saveData(_tokenAmount);
 
-        usdt.safeTransferFrom(msg.sender, address(this), usdtCost);
+        usdt.safeTransferFrom(msg.sender, fundsAddress, usdtCost);
 
         emit TokenBought(msg.sender, _tokenAmount, block.timestamp);
     }
@@ -280,7 +280,7 @@ contract TaskChainPresaleV2 is Ownable, ReentrancyGuard, Pausable {
         if(!isUserDataTransfferedFromV1[_user]){
             return taskChainPresaleV1.tokensBought(_user);
         }else{
-            return tokensBought[msg.sender];
+            return tokensBought[_user];
         }
     }
 

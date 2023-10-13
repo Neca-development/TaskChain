@@ -16,7 +16,7 @@ describe("TaskChainPresaleV2", function () {
     const [owner, otherAccount] = await ethers.getSigners();
      
     // DATA FROM SC
-    const AVAILABLE_TOKENS = 277091073;
+    const AVAILABLE_TOKENS = 277033673;
 
     const whaleUser =  await ethers.getImpersonatedSigner("0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8");
     const tokenHolder =  await ethers.getImpersonatedSigner("0x51423fBA13BbD6114Cc73D998862f210Faa6DCd3");
@@ -76,7 +76,15 @@ describe("TaskChainPresaleV2", function () {
 
       await USDTContract.approve(taskChainPresaleV2.address, usdt_cost);
 
+      const fundsAddressBalanceBeforePurchase = await USDTContract.balanceOf('0xC35A5df1Bc74C7e96AfA6e047890f46459369743');
+
       await taskChainPresaleV2.connect(whaleUser).buyTokenWithUSDT(TOKENS_TO_BUY);
+
+      const usdtPriceOfTokens = await taskChainPresaleV2.calculateUsdtCost(TOKENS_TO_BUY);
+
+      const fundsAddressBalanceAfterPurchase = await USDTContract.balanceOf('0xC35A5df1Bc74C7e96AfA6e047890f46459369743');
+
+      expect(fundsAddressBalanceAfterPurchase).to.be.eq(fundsAddressBalanceBeforePurchase.add(usdtPriceOfTokens));
 
       const availbleTokensAfterPurchase = await taskChainPresaleV2.getAvailableTokensInStage();
 
@@ -178,5 +186,28 @@ describe("TaskChainPresaleV2", function () {
       expect(tokensSoldOnStage2AfterPurchase).to.be.eq(TOKENS_TO_BUY);
 
     }); 
+
+
+
+
+    it("Check getUserBoughtAmount", async function () {
+
+      const { taskChainPresaleV2, taskChainPresale, realUserWhoBought, whaleUser} = await loadFixture(deployOneYearLockFixture);
+
+      await whaleUser.sendTransaction({to:realUserWhoBought.address, value:ethers.utils.parseEther('1')});
+
+      const userBoughtBeforePurchase = await taskChainPresaleV2.getBoughtTokensAmount(realUserWhoBought.address);
+
+      expect(userBoughtBeforePurchase).to.be.greaterThan(0);
+
+      console.log("Before purchase", +userBoughtBeforePurchase)
+
+      await taskChainPresaleV2.connect(realUserWhoBought).buyTokenWithETH(1, {value:ethers.utils.parseEther('0.05')});
+
+      const userBoughtAfterPurchase = await taskChainPresaleV2.getBoughtTokensAmount(realUserWhoBought.address);
+
+      expect(userBoughtAfterPurchase).to.be.eq(userBoughtBeforePurchase.add(1));
+
+    });
   });
 });
